@@ -11,6 +11,7 @@ from googletrans import Translator
 import model, sample, encoder
 
 def interact_model(
+    file1,file2,file3,
     model_name='1558M',
     seed=None,
     nsamples=1,
@@ -41,6 +42,7 @@ def interact_model(
      :models_dir : path to parent folder containing model subfolders
      (i.e. contains the <model_name> folder)
     """
+    print(file1)
     models_dir = os.path.expanduser(os.path.expandvars(models_dir))
     if batch_size is None:
         batch_size = 1
