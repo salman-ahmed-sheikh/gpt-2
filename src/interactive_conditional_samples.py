@@ -5,17 +5,19 @@ import json
 import os
 import numpy as np
 import tensorflow as tf
+from googletrans import Translator
+
 
 import model, sample, encoder
 
 def interact_model(
-    model_name='124M',
+    model_name='1558M',
     seed=None,
     nsamples=1,
     batch_size=1,
     length=None,
-    temperature=1,
-    top_k=0,
+    temperature=0.7,
+    top_k=40,
     top_p=1,
     models_dir='models',
 ):
@@ -85,6 +87,9 @@ def interact_model(
                     text = enc.decode(out[i])
                     print("=" * 40 + " SAMPLE " + str(generated) + " " + "=" * 40)
                     print(text)
+                    print("=" * 60)
+                    translator = Translator()
+                    print(translator.translate(text, dest = 'hu').text)
             print("=" * 80)
 
 if __name__ == '__main__':
