@@ -11,7 +11,7 @@ from googletrans import Translator
 import model, sample, encoder
 
 def interact_model(
-    file1,file2,file3,
+    #file1,file2,file3,
     model_name='1558M',
     seed=None,
     nsamples=1,
