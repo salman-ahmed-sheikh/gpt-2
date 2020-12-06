@@ -5,7 +5,7 @@ import json
 import os
 import numpy as np
 import tensorflow as tf
-from googletrans import Translator
+from google_trans_new import google_translator
 
 
 import model, sample, encoder
@@ -90,10 +90,11 @@ def interact_model(
                     print("=" * 40 + " SAMPLE " + str(generated) + " " + "=" * 40)
                     print(text)
                     print("=" * 60)
-                    translator = Translator()
-                    print(translator.translate(text, dest = 'hu').text)
+                    translator = google_translator()
+                    print(translator.translate(text, lang_tgt = 'hu'))
             print("=" * 80)
 
 if __name__ == '__main__':
-    fire.Fire(interact_model)
+    #fire.Fire(interact_model)    
+    interact_model()
 
