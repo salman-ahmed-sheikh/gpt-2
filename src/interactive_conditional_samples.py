@@ -53,8 +53,9 @@ def interact_model(
     with open(os.path.join(models_dir, model_name, 'hparams.json')) as f:
         hparams.override_from_dict(json.load(f))
 
+
     if length is None:
-        length = hparams.n_ctx // 2
+        length = hparams.n_ctx - 2
     elif length > hparams.n_ctx:
         raise ValueError("Can't get samples longer than window size: %s" % hparams.n_ctx)
 
