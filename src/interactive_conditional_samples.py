@@ -89,8 +89,8 @@ def interact_model(
         ckpt = tf.train.latest_checkpoint(os.path.join(models_dir, model_name))
         saver.restore(sess, ckpt)
 
-        output = csv.writer(open('output.csv', 'w',  encoding='utf-8'))
-        output.writerow(["keyword", "GUID", "Description", "Tags", "Article", "Category"])
+        outpt = csv.writer(open('output.csv', 'w',  encoding='utf-8'))
+        outpt.writerow(["keyword", "GUID", "Description", "Tags", "Article", "Category"])
         # open title file
         with open('titles.txt') as f:
             titles = f.readlines()
@@ -125,7 +125,7 @@ def interact_model(
             article = translate(article)
             tags = translate(",".join(selectRandom(keywords,3,4)))
             categories = translate(",".join(selectRandom(keywords,1,2)))
-            output.writerow([keyword, i+1, title, tags, article, categories])
+            outpt.writerow([keyword, i+1, title, tags, article, categories])
 
             #print("=" * 80)
 
