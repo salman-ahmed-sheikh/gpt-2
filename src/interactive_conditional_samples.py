@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import fire
+#import fire
 import json
 import os
 import numpy as np
