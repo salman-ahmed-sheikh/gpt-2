@@ -103,7 +103,8 @@ def interact_model(
         with open('images.txt') as f:
             images = f.readlines()
 
-        for i, title in enumerate (titles):                   
+        for i, title in enumerate (titles):    
+            print("Generating text for: ", title)               
             context_tokens = enc.encode(title)
             generated = 0
             for _ in range(nsamples // batch_size):
@@ -113,7 +114,7 @@ def interact_model(
                 for i in range(batch_size):
                     generated += 1
                     article = enc.decode(out[i])
-                    print(article)
+                    #print(article)
                     #print("=" * 40 + " SAMPLE " + str(generated) + " " + "=" * 40)
                     #print(article)
                     #print("=" * 60)
@@ -121,7 +122,7 @@ def interact_model(
                     #print(translator.translate(article, lang_tgt = 'hu'))
             
             title = translate(title)
-            keyword = translate(keyword)            
+            keyword = translate(keyword[i % len(keywords)])            
             article = translate(article)
             tags = translate(",".join(selectRandom(keywords,3,4)))
             categories = translate(",".join(selectRandom(keywords,1,2)))
