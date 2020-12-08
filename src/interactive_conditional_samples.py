@@ -6,9 +6,24 @@ import os
 import numpy as np
 import tensorflow as tf
 from google_trans_new import google_translator
-
+import csv
+import random
 
 import model, sample, encoder
+
+def translate(items):
+    translator = google_translator()
+    if type(items) == "list":
+        ret = []        
+        for item in items:
+            ret.append(translator.translate(item, lang_tgt = 'hu'))
+        return ret
+    else:
+        return translator.translate(items, lang_tgt = 'hu')
+def selectRandom (items, minm, maxm):
+    count = random.randint(minm, maxm)
+    return random.sample(items, count)
+
 
 def interact_model(
     #file1,file2,file3,
@@ -55,7 +70,7 @@ def interact_model(
 
 
     if length is None:
-        length = hparams.n_ctx - 2
+        length = 1000#hparams.n_ctx - 2
     elif length > hparams.n_ctx:
         raise ValueError("Can't get samples longer than window size: %s" % hparams.n_ctx)
 
@@ -74,12 +89,22 @@ def interact_model(
         ckpt = tf.train.latest_checkpoint(os.path.join(models_dir, model_name))
         saver.restore(sess, ckpt)
 
-        while True:
-            raw_text = input("Model prompt >>> ")
-            while not raw_text:
-                print('Prompt should not be empty!')
-                raw_text = input("Model prompt >>> ")
-            context_tokens = enc.encode(raw_text)
+        output = csv.writer(open('output.csv', 'w',  encoding='utf-8'))
+        output.writerow(["keyword", "GUID", "Description", "Tags", "Article", "Category"])
+        # open title file
+        with open('titles.txt') as f:
+            titles = f.readlines()
+
+        # open keywords file
+        with open('keywords.txt') as f:
+            keywords = f.readlines()
+
+        # open title file
+        with open('images.txt') as f:
+            images = f.readlines()
+
+        for i, title in enumerate (titles):                   
+            context_tokens = enc.encode(title)
             generated = 0
             for _ in range(nsamples // batch_size):
                 out = sess.run(output, feed_dict={
@@ -87,13 +112,22 @@ def interact_model(
                 })[:, len(context_tokens):]
                 for i in range(batch_size):
                     generated += 1
-                    text = enc.decode(out[i])
-                    print("=" * 40 + " SAMPLE " + str(generated) + " " + "=" * 40)
-                    print(text)
-                    print("=" * 60)
-                    translator = google_translator()
-                    print(translator.translate(text, lang_tgt = 'hu'))
-            print("=" * 80)
+                    article = enc.decode(out[i])
+                    print(article)
+                    #print("=" * 40 + " SAMPLE " + str(generated) + " " + "=" * 40)
+                    #print(article)
+                    #print("=" * 60)
+                    #translator = google_translator()
+                    #print(translator.translate(article, lang_tgt = 'hu'))
+            
+            title = translate(title)
+            keyword = translate(keyword)            
+            article = translate(article)
+            tags = translate(",".join(selectRandom(keywords,3,4)))
+            categories = translate(",".join(selectRandom(keywords,1,2)))
+            output.writerow([keyword, i+1, title, tags, article, categories])
+
+            #print("=" * 80)
 
 if __name__ == '__main__':
     #fire.Fire(interact_model)    
