@@ -24,7 +24,23 @@ def selectRandom (items, minm, maxm):
     count = random.randint(minm, maxm)
     return random.sample(items, count)
 
+def addImages(txt, imgs):
+    try:
+        ll = txt.split("\n")
+        img = random.choice(imgs)
+        img2 = random.choice(imgs)
+        cnt1 = (ll // 2) //2
+        cnt2 = cnt1 + (ll // 2)    
+        out = "\n".join(ll[0:cnt1])
+        out = out + " <img src=" + img + ">"
+        out = out + "\n".join(ll[cnt1:cnt2])
+        out = out + " <img src=" + img2 + ">"
+        out = out + "\n".join(ll[cnt2:])
+        return out
+    except:
+        return txt
 
+    
 def interact_model(
     #file1,file2,file3,
     model_name='1558M',
@@ -88,7 +104,10 @@ def interact_model(
         saver = tf.train.Saver()
         ckpt = tf.train.latest_checkpoint(os.path.join(models_dir, model_name))
         saver.restore(sess, ckpt)
-
+        try:
+            os.remove("output.csv")
+        except:
+            pass
         outpt = csv.writer(open('output.csv', 'w',  encoding='utf-8'))
         outpt.writerow(["keyword", "GUID", "Description", "Tags", "Article", "Category"])
         # open title file
@@ -103,8 +122,10 @@ def interact_model(
         with open('images.txt') as f:
             images = f.readlines()
 
-        for i, title in enumerate (titles):    
+        for i, title in enumerate (titles):  
+            print("=" * 20)  
             print("Generating text for: ", title)               
+            print("=" * 20)
             context_tokens = enc.encode(title)
             generated = 0
             for _ in range(nsamples // batch_size):
@@ -119,13 +140,14 @@ def interact_model(
                     #print(article)
                     #print("=" * 60)
                     #translator = google_translator()
-                    #print(translator.translate(article, lang_tgt = 'hu'))
+                    #print(translator.translate(article, lang_tgt = 'hu')) 
             
             title = translate(title)
-            keyword = translate(keyword[i % len(keywords)])            
+            keyword = translate(keywords[i % len(keywords)])            
             article = translate(article)
             tags = translate(",".join(selectRandom(keywords,3,4)))
             categories = translate(",".join(selectRandom(keywords,1,2)))
+            article = addImages(article,images)
             outpt.writerow([keyword, i+1, title, tags, article, categories])
 
             #print("=" * 80)
