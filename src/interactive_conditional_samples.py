@@ -29,15 +29,16 @@ def addImages(txt, imgs):
         ll = txt.split("\n")
         img = random.choice(imgs)
         img2 = random.choice(imgs)
-        cnt1 = (ll // 2) //2
-        cnt2 = cnt1 + (ll // 2)    
+        cnt1 = (len(ll) // 2) //2
+        cnt2 = cnt1 + (len(ll) // 2)    
         out = "\n".join(ll[0:cnt1])
         out = out + " <img src=" + img + ">"
         out = out + "\n".join(ll[cnt1:cnt2])
         out = out + " <img src=" + img2 + ">"
         out = out + "\n".join(ll[cnt2:])
         return out
-    except:
+    except Exception as e:
+        print(e)
         return txt
 
     
