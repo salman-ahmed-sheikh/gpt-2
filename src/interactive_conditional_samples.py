@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-#import fire
+import fire
 import json
 import os
 import numpy as np
@@ -49,7 +49,7 @@ def interact_model(
     nsamples=1,
     batch_size=1,
     length=None,
-    temperature=0.7,
+    temperature=0.8,
     top_k=40,
     top_p=1,
     models_dir='models',
@@ -112,16 +112,16 @@ def interact_model(
         outpt = csv.writer(open('output.csv', 'w',  encoding='utf-8'))
         outpt.writerow(["keyword", "GUID", "Description", "Tags", "Article", "Category"])
         # open title file
-        with open('titles.txt') as f:
-            titles = f.readlines()
+        with open('titles.txt') as f1:
+            titles = f1.readlines()
 
         # open keywords file
-        with open('keywords.txt') as f:
-            keywords = f.readlines()
+        with open('keywords.txt') as f2:
+            keywords = f2.readlines()
 
         # open title file
-        with open('images.txt') as f:
-            images = f.readlines()
+        with open('images.txt') as f3:
+            images = f3.readlines()
 
         for i, title in enumerate (titles):  
             print("=" * 20)  
@@ -144,7 +144,8 @@ def interact_model(
                     #print(translator.translate(article, lang_tgt = 'hu')) 
             
             title = translate(title)
-            keyword = translate(keywords[i % len(keywords)])            
+            keyword = translate(keywords[i % len(keywords)])
+            print(article)            
             article = translate(article)
             tags = translate(",".join(selectRandom(keywords,3,4)))
             categories = translate(",".join(selectRandom(keywords,1,2)))
@@ -154,6 +155,6 @@ def interact_model(
             #print("=" * 80)
 
 if __name__ == '__main__':
-    #fire.Fire(interact_model)    
-    interact_model()
+    fire.Fire(interact_model)    
+    #interact_model()
 
