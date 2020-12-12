@@ -145,7 +145,7 @@ def interact_model(
             
             title = translate(title)
             keyword = translate(keywords[i % len(keywords)])
-            print(article)            
+            #print(article)            
             article = translate(article)
             tags = translate(",".join(selectRandom(keywords,3,4)))
             categories = translate(",".join(selectRandom(keywords,1,2)))
