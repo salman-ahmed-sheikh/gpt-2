@@ -112,15 +112,15 @@ def interact_model(
         outpt = csv.writer(open('output.csv', 'w',  encoding='utf-8'))
         outpt.writerow(["keyword", "GUID", "Description", "Tags", "Article", "Category"])
         # open title file
-        with open('titles.txt') as f1:
+        with open('ttt165.txt') as f1:
             titles = f1.readlines()
 
         # open keywords file
-        with open('keywords.txt') as f2:
+        with open('kk654.txt') as f2:
             keywords = f2.readlines()
 
         # open title file
-        with open('images.txt') as f3:
+        with open('im95.txt') as f3:
             images = f3.readlines()
 
         for i, title in enumerate (titles):  
