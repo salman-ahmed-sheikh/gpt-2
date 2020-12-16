@@ -123,7 +123,7 @@ def interact_model(
         with open('im95.txt') as f3:
             images = f3.readlines()
 
-        for i, title in enumerate (titles):  
+        for xm, title in enumerate (titles):  
             print("=" * 20)  
             print("Generating text for: ", title)               
             print("=" * 20)
@@ -144,13 +144,13 @@ def interact_model(
                     #print(translator.translate(article, lang_tgt = 'hu')) 
             
             title = translate(title)
-            keyword = translate(keywords[i % len(keywords)])
+            keyword = translate(keywords[xm % len(keywords)])
             #print(article)            
             article = translate(article)
             tags = translate(",".join(selectRandom(keywords,3,4)))
             categories = translate(",".join(selectRandom(keywords,1,2)))
             article = addImages(article,images)
-            outpt.writerow([keyword, i+1, title, tags, article, categories])
+            outpt.writerow([keyword, xm+1, title, tags, article, categories])
 
             #print("=" * 80)
 
