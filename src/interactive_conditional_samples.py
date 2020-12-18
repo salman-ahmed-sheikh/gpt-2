@@ -111,6 +111,11 @@ def interact_model(
             pass
         outpt = csv.writer(open('output.csv', 'w',  encoding='utf-8'))
         outpt.writerow(["keyword", "GUID", "Description", "Tags", "Article", "Category"])
+        
+        # open text file
+        with open('tx654.txt') as f1:
+            txt = f1.readlines()
+        
         # open title file
         with open('ttt165.txt') as f1:
             titles = f1.readlines()
@@ -123,11 +128,11 @@ def interact_model(
         with open('im95.txt') as f3:
             images = f3.readlines()
 
-        for xm, title in enumerate (titles):  
+        for xm, (title,tt) in enumerate (zip(titles,txt)):  
             print("=" * 20)  
             print("Generating text for: ", title)               
             print("=" * 20)
-            context_tokens = enc.encode(title)
+            context_tokens = enc.encode(tt)
             generated = 0
             for _ in range(nsamples // batch_size):
                 out = sess.run(output, feed_dict={
@@ -145,7 +150,8 @@ def interact_model(
             
             title = translate(title)
             keyword = translate(keywords[xm % len(keywords)])
-            #print(article)            
+            print(article)          
+            article = article.replace(" <| Endoftext |>", "")  
             article = translate(article)
             tags = translate(",".join(selectRandom(keywords,3,4)))
             categories = translate(",".join(selectRandom(keywords,1,2)))
