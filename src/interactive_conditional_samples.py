@@ -19,6 +19,7 @@ def translate(items):
             ret.append(translator.translate(item, lang_tgt = 'hu'))
         return ret
     else:
+        items.replace("<|endoftext|>", "")
         return translator.translate(items, lang_tgt = 'hu')
 def selectRandom (items, minm, maxm):
     count = random.randint(minm, maxm)
@@ -39,9 +40,7 @@ def addImages(txt, imgs):
         return out
     except Exception as e:
         print(e)
-        return txt
-
-    
+        return txt    
 def interact_model(
     #file1,file2,file3,
     model_name='1558M',
@@ -49,7 +48,7 @@ def interact_model(
     nsamples=1,
     batch_size=1,
     length=None,
-    temperature=0.8,
+    temperature=1,
     top_k=40,
     top_p=1,
     models_dir='models',
@@ -77,7 +76,7 @@ def interact_model(
     #print(file1)
     models_dir = os.path.expanduser(os.path.expandvars(models_dir))
     if batch_size is None:
-        batch_size = 1
+        batch_size = 3
     assert nsamples % batch_size == 0
 
     enc = encoder.get_encoder(model_name, models_dir)
@@ -87,7 +86,7 @@ def interact_model(
 
 
     if length is None:
-        length = 1000#hparams.n_ctx - 2
+        length = 500#hparams.n_ctx - 2
     elif length > hparams.n_ctx:
         raise ValueError("Can't get samples longer than window size: %s" % hparams.n_ctx)
 
@@ -113,52 +112,52 @@ def interact_model(
         outpt.writerow(["keyword", "GUID", "Description", "Tags", "Article", "Category"])
         
         # open text file
-        with open('tx654.txt') as f1:
-            txt = f1.readlines()
+        with open('u\\text.txt') as f0:#open('tx654.txt') as f1:
+            txt = f0.readlines()
         
         # open title file
-        with open('ttt165.txt') as f1:
+        with open('u\\titles.txt') as f1: #open('ttt165.txt') as f1:
             titles = f1.readlines()
 
         # open keywords file
-        with open('kk654.txt') as f2:
+        with open('u\\keywords.txt') as f2: #open('kk654.txt') as f2:
             keywords = f2.readlines()
 
-        # open title file
-        with open('im95.txt') as f3:
+        # open images file
+        with open('u\\images.txt') as f3: #open('im95.txt') as f3:
             images = f3.readlines()
 
         for xm, (title,tt) in enumerate (zip(titles,txt)):  
-            print("=" * 20)  
-            print("Generating text for: ", title)               
+            print("=" * 20) 
+            title = title.replace("\n","") 
+            print("Generating text for: ", title)
+            print("Input Sentence: ", tt)               
             print("=" * 20)
-            context_tokens = enc.encode(tt)
-            generated = 0
-            for _ in range(nsamples // batch_size):
-                out = sess.run(output, feed_dict={
-                    context: [context_tokens for _ in range(batch_size)]
-                })[:, len(context_tokens):]
-                for i in range(batch_size):
-                    generated += 1
-                    article = enc.decode(out[i])
-                    #print(article)
-                    #print("=" * 40 + " SAMPLE " + str(generated) + " " + "=" * 40)
-                    #print(article)
-                    #print("=" * 60)
-                    #translator = google_translator()
-                    #print(translator.translate(article, lang_tgt = 'hu')) 
+            inps = tt.split(".")
             
+            article = ""
+            for enm,inp in enumerate(inps):
+                while True:
+                    context_tokens = enc.encode(inp)                        
+                    out = sess.run(output, feed_dict={context: [context_tokens for _ in range(batch_size)]})[:, len(context_tokens):]
+                    if not "<|endoftext|>" in enc.decode(out[0]):
+                        break
+                article += translate(inp + enc.decode(out[0]))
+                if enm != len(inp)-1:
+                    img = random.choice(images)
+                    article += "\n <img src=" + img + "> \n"
+
             title = translate(title)
             keyword = translate(keywords[xm % len(keywords)])
-            print(article)          
-            article = article.replace(" <| Endoftext |>", "")  
-            article = translate(article)
+            #print(article)          
+            #article = article.replace(" <| Endoftext |>", "")  #
+            #article = article.replace("<|endoftext|>", "")
+            #article = translate(article)
             tags = translate(",".join(selectRandom(keywords,3,4)))
             categories = translate(",".join(selectRandom(keywords,1,2)))
-            article = addImages(article,images)
+            #article = addImages(article,images)
             outpt.writerow([keyword, xm+1, title, tags, article, categories])
 
-            #print("=" * 80)
 
 if __name__ == '__main__':
     fire.Fire(interact_model)    
