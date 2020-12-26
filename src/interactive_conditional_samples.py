@@ -142,13 +142,18 @@ def interact_model(
                     out = sess.run(output, feed_dict={context: [context_tokens for _ in range(batch_size)]})[:, len(context_tokens):]
                     if not "<|endoftext|>" in enc.decode(out[0]):
                         break
-                article += translate(inp + enc.decode(out[0]))
+                    print("======>>> Article is not usable, Generating again")
+                amb = inp + enc.decode(out[0])
+                amb = amb[0:amb.rindex(".")] + "."
+                ##print(amb,"\n^^^\n")
+                article += translate(amb)
                 if enm != len(inp)-1:
                     img = random.choice(images)
                     article += "\n <img src=" + img + "> \n"
 
             title = translate(title)
             keyword = translate(keywords[xm % len(keywords)])
+            title = keyword +" - "+ title
             #print(article)          
             #article = article.replace(" <| Endoftext |>", "")  #
             #article = article.replace("<|endoftext|>", "")
