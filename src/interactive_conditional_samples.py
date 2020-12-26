@@ -112,19 +112,19 @@ def interact_model(
         outpt.writerow(["keyword", "GUID", "Description", "Tags", "Article", "Category"])
         
         # open text file
-        with open('u\\text.txt') as f0:#open('tx654.txt') as f1:
+        with open('tx654.txt') as f0:#open('u\\text.txt') as f0:#open('tx654.txt') as f0:
             txt = f0.readlines()
         
         # open title file
-        with open('u\\titles.txt') as f1: #open('ttt165.txt') as f1:
+        with open('ttt165.txt') as f1:#open('u\\titles.txt') as f1: #open('ttt165.txt') as f1:
             titles = f1.readlines()
 
         # open keywords file
-        with open('u\\keywords.txt') as f2: #open('kk654.txt') as f2:
+        with open('kk654.txt') as f2:#open('u\\keywords.txt') as f2: #open('kk654.txt') as f2:
             keywords = f2.readlines()
 
         # open images file
-        with open('u\\images.txt') as f3: #open('im95.txt') as f3:
+        with open('im95.txt') as f3:#open('u\\images.txt') as f3: #open('im95.txt') as f3:
             images = f3.readlines()
 
         for xm, (title,tt) in enumerate (zip(titles,txt)):  
