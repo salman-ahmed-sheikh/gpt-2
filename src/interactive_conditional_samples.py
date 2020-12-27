@@ -112,23 +112,25 @@ def interact_model(
         outpt.writerow(["keyword", "GUID", "Description", "Tags", "Article","Article-english", "Category"])
         
         # open text file
-        with open('tx654.txt') as f0:#open('u\\text.txt') as f0:#open('tx654.txt') as f0:
+        with open('u\\text.txt') as f0:#open('tx654.txt') as f0:#open('u\\text.txt') as f0:#open('tx654.txt') as f0:
             txt = f0.readlines()
         
         # open title file
-        with open('ttt165.txt') as f1:#open('u\\titles.txt') as f1: #open('ttt165.txt') as f1:
+        with open('u\\titles.txt') as f1: #open('ttt165.txt') as f1:#open('u\\titles.txt') as f1: #open('ttt165.txt') as f1:
             titles = f1.readlines()
 
         # open keywords file
-        with open('kk654.txt') as f2:#open('u\\keywords.txt') as f2: #open('kk654.txt') as f2:
+        with open('u\\keywords.txt') as f2: #open('kk654.txt') as f2:#open('u\\keywords.txt') as f2: #open('kk654.txt') as f2:
             keywords = f2.readlines()
 
         # open images file
-        with open('im95.txt') as f3:#open('u\\images.txt') as f3: #open('im95.txt') as f3:
+        with open('u\\images.txt') as f3: #open('im95.txt') as f3:#open('u\\images.txt') as f3: #open('im95.txt') as f3:
             images = f3.readlines()
 
         for xm, (title,tt) in enumerate (zip(titles,txt)):  
             print("=" * 20) 
+            tt = tt[0:tt.rindex(".")]
+            #tt= tt.replace("\n","")
             title = title.replace("\n","") 
             print("Generating text for: ", title)
             print("Input Sentence: ", tt)               
