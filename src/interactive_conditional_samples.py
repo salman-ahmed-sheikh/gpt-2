@@ -157,7 +157,7 @@ def interact_model(
             title = translate(title)
             keyword = translate(keywords[xm % len(keywords)])
             title = keyword +" - "+ title
-            print(art-eng)          
+            print(art_eng)          
             #article = article.replace(" <| Endoftext |>", "")  #
             #article = article.replace("<|endoftext|>", "")
             #article = translate(article)
