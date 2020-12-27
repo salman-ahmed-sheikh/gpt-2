@@ -109,7 +109,7 @@ def interact_model(
         except:
             pass
         outpt = csv.writer(open('output.csv', 'w',  encoding='utf-8'))
-        outpt.writerow(["keyword", "GUID", "Description", "Tags", "Article", "Category"])
+        outpt.writerow(["keyword", "GUID", "Description", "Tags", "Article","Article-english", "Category"])
         
         # open text file
         with open('tx654.txt') as f0:#open('u\\text.txt') as f0:#open('tx654.txt') as f0:
@@ -136,6 +136,7 @@ def interact_model(
             inps = tt.split(".")
             
             article = ""
+            art_eng = ""
             for enm,inp in enumerate(inps):
                 while True:
                     context_tokens = enc.encode(inp)                        
@@ -146,22 +147,24 @@ def interact_model(
                 amb = inp + enc.decode(out[0])
                 amb = amb[0:amb.rindex(".")] + "."
                 ##print(amb,"\n^^^\n")
+                art_eng += amb
                 article += translate(amb)
                 if enm != len(inp)-1:
                     img = random.choice(images)
                     article += "\n <img src=" + img + "> \n"
-
+                    art_eng += "\n <img src=" + img + "> \n"
+            
             title = translate(title)
             keyword = translate(keywords[xm % len(keywords)])
             title = keyword +" - "+ title
-            #print(article)          
+            print(art-eng)          
             #article = article.replace(" <| Endoftext |>", "")  #
             #article = article.replace("<|endoftext|>", "")
             #article = translate(article)
             tags = translate(",".join(selectRandom(keywords,3,4)))
             categories = translate(",".join(selectRandom(keywords,1,2)))
             #article = addImages(article,images)
-            outpt.writerow([keyword, xm+1, title, tags, article, categories])
+            outpt.writerow([keyword, xm+1, title, tags, article,art_eng, categories])
 
 
 if __name__ == '__main__':
