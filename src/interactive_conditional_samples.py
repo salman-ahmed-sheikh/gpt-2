@@ -140,6 +140,7 @@ def interact_model(
             article = ""
             art_eng = ""
             for enm,inp in enumerate(inps):
+                
                 while True:
                     context_tokens = enc.encode(inp)                        
                     out = sess.run(output, feed_dict={context: [context_tokens for _ in range(batch_size)]})[:, len(context_tokens):]
@@ -149,10 +150,11 @@ def interact_model(
                 amb = inp + enc.decode(out[0])
                 amb = amb[0:amb.rindex(".")] + "."
                 ##print(amb,"\n^^^\n")
-                art_eng += amb
-                article += translate(amb)
-                if enm != len(inp)-1:
+                art_eng += inp + amb
+                article += translate(inp + amb)
+                if enm != len(inp)-2:
                     img = random.choice(images)
+                    img = img.replace("\n","")
                     article += "\n <img src=" + img + "> \n"
                     art_eng += "\n <img src=" + img + "> \n"
             
