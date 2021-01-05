@@ -86,7 +86,7 @@ def interact_model(
 
 
     if length is None:
-        length = 500#hparams.n_ctx - 2
+        length = 300#hparams.n_ctx - 2
     elif length > hparams.n_ctx:
         raise ValueError("Can't get samples longer than window size: %s" % hparams.n_ctx)
 
@@ -146,7 +146,7 @@ def interact_model(
                     out = sess.run(output, feed_dict={context: [context_tokens for _ in range(batch_size)]})[:, len(context_tokens):]
                     if not "<|endoftext|>" in enc.decode(out[0]):
                         break
-                    print("======>>> Article is not usable, Generating again")
+                    #print("======>>> Article is not usable, Generating again")
                 amb = inp + enc.decode(out[0])
                 amb = amb[0:amb.rindex(".")] + "."
                 ##print(amb,"\n^^^\n")
