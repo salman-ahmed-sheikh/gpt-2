@@ -40,7 +40,15 @@ def addImages(txt, imgs):
         return out
     except Exception as e:
         print(e)
-        return txt    
+        return txt 
+
+def highlight_Article(art, high):
+    for h in high:
+        if len (h) > 3:
+            fin = "<b>" + h + "</b>"
+            art = art.replace(h, fin)
+    return art
+
 def interact_model(
     #file1,file2,file3,
     model_name='1558M',
@@ -127,16 +135,38 @@ def interact_model(
         with open('im95.txt') as f3:#open('u\\images.txt') as f3: #open('im95.txt') as f3:
             images = f3.readlines()
 
-        for xm, (title,tt) in enumerate (zip(titles,txt)):  
+
+        
+
+
+        for xm, (title,tt) in enumerate (zip(titles,txt)): 
+            keyword = translate(keywords[xm % len(keywords)]) 
             print("=" * 20) 
             tt = tt[0:tt.rindex(".")]
+            usd_titles = []
             #tt= tt.replace("\n","")
             title = title.replace("\n","") 
+            usd_titles.append(title)
+            title = translate(title)
+            highlight = title.split(" ")
+            highlight.extend(keyword.split(" "))
+
+            
+
+
             print("Generating text for: ", title)
             print("Input Sentence: ", tt)               
             print("=" * 20)
             inps = tt.split(".")
             
+            imgs = random.sample(images, min(len(inps)-1,len(images)))
+            tits = random.sample(titles, min(len(inps)-1,len(titles)))
+
+            temp = [translate(t.replace("\n","")).split(" ") for t in tits]
+            [highlight.extend(tt) for tt in temp]
+
+
+
             article = ""
             art_eng = ""
             for enm,inp in enumerate(inps):
@@ -146,25 +176,30 @@ def interact_model(
                     out = sess.run(output, feed_dict={context: [context_tokens for _ in range(batch_size)]})[:, len(context_tokens):]
                     if not "<|endoftext|>" in enc.decode(out[0]):
                         break
+
                     #print("======>>> Article is not usable, Generating again")
+
+
                 amb = inp + enc.decode(out[0])
                 amb = amb[0:amb.rindex(".")] + "."
                 ##print(amb,"\n^^^\n")
                 art_eng += inp + amb
-                article += translate(inp + amb)
-                if enm != len(inp)-2:
-                    img = random.choice(images)
-                    img = img.replace("\n","")
-                    article += "\n <img src=" + img + "> \n"
-                    art_eng += "\n <img src=" + img + "> \n"
-            
-            title = translate(title)
-            keyword = translate(keywords[xm % len(keywords)])
+                article += highlight_Article(translate(inp + amb),highlight)
+                if enm < len(inps)-1:                    
+                    img = imgs[enm].replace("\n","")
+                    article += "\n <img src=" + img + " alt = " + keyword + "> \n"
+                    art_eng += "\n <img src=" + img + " alt = " + keyword + "> \n"                    
+                    
+                    t2 = tits[enm].replace("\n","")                
+                    article += "<h2>" + translate(t2)+"</h2>\n" 
+                    
+                
             title = keyword +" - "+ title
             print(art_eng)          
             #article = article.replace(" <| Endoftext |>", "")  #
             #article = article.replace("<|endoftext|>", "")
             #article = translate(article)
+            #article = highlight_Article(article,highlight)
             tags = translate(",".join(selectRandom(keywords,3,4)))
             categories = translate(",".join(selectRandom(keywords,1,2)))
             #article = addImages(article,images)
