@@ -92,7 +92,8 @@ def interact_model(
     with open(os.path.join(models_dir, model_name, 'hparams.json')) as f:
         hparams.override_from_dict(json.load(f))
 
-
+    st_head = ["<h1>", "<h2>", "<h3>"]
+    en_head = ["</h1>", "</h2>", "</h3>"]
     if length is None:
         length = 300#hparams.n_ctx - 2
     elif length > hparams.n_ctx:
@@ -190,8 +191,10 @@ def interact_model(
                     article += "\n <img src=" + img + " alt = " + keyword + "> \n"
                     art_eng += "\n <img src=" + img + " alt = " + keyword + "> \n"                    
                     
-                    t2 = tits[enm].replace("\n","")                
-                    article += "<h2>" + translate(t2)+"</h2>\n" 
+                    t2 = tits[enm].replace("\n","")
+                                   
+                    hd = random.randint(0,2)
+                    article += st_head[hd] + translate(t2) + en_head[hd] + "\n" 
                     
                 
             title = keyword +" - "+ title
