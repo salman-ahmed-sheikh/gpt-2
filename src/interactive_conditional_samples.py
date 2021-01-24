@@ -81,7 +81,7 @@ def interact_model(
      :models_dir : path to parent folder containing model subfolders
      (i.e. contains the <model_name> folder)
     """
-    #print(file1)
+    sameKeyword = True # True: for same keyword in all headings, False: for random keyword for each heading 
     models_dir = os.path.expanduser(os.path.expandvars(models_dir))
     if batch_size is None:
         batch_size = 3
@@ -162,6 +162,7 @@ def interact_model(
             
             imgs = random.sample(images, min(len(inps)-1,len(images)))
             tits = random.sample(titles, min(len(inps)-1,len(titles)))
+            kkw = [translate(k) for k in tits = random.sample(keyword, min(len(inps)-1,len(keywords)))]
 
             temp = [translate(t.replace("\n","")).split(" ") for t in tits]
             [highlight.extend(tt) for tt in temp]
@@ -177,13 +178,11 @@ def interact_model(
                     out = sess.run(output, feed_dict={context: [context_tokens for _ in range(batch_size)]})[:, len(context_tokens):]
                     if not "<|endoftext|>" in enc.decode(out[0]):
                         break
-
-                    #print("======>>> Article is not usable, Generating again")
-
+                   
 
                 amb = inp + enc.decode(out[0])
                 amb = amb[0:amb.rindex(".")] + "."
-                ##print(amb,"\n^^^\n")
+                
                 art_eng += inp + amb
                 article += highlight_Article(translate(inp + amb),highlight)
                 if enm < len(inps)-1:                    
@@ -194,7 +193,11 @@ def interact_model(
                     t2 = tits[enm].replace("\n","")
                                    
                     hd = random.randint(0,2)
-                    article += st_head[hd] + translate(t2) + en_head[hd] + "\n" 
+                    if sameKeyword: 
+                        kk = keyword
+                    else:
+                        kk = kkw[enm]
+                    article += st_head[hd] + kk + " - " + translate(t2) + en_head[hd] + "\n" 
                     
                 
             title = keyword +" - "+ title
