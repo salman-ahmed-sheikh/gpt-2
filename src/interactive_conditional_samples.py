@@ -162,7 +162,7 @@ def interact_model(
             
             imgs = random.sample(images, min(len(inps)-1,len(images)))
             tits = random.sample(titles, min(len(inps)-1,len(titles)))
-            kkw = [translate(k) for k in tits = random.sample(keyword, min(len(inps)-1,len(keywords)))]
+            kkw = [translate(k) for k in random.sample(keyword, min(len(inps)-1,len(keywords)))]
 
             temp = [translate(t.replace("\n","")).split(" ") for t in tits]
             [highlight.extend(tt) for tt in temp]
