@@ -121,19 +121,19 @@ def interact_model(
         outpt.writerow(["keyword", "GUID", "Description", "Tags", "Article","Article-english", "Category"])
         
         # open text file
-        with open('tx654.txt') as f0:#open('u\\text.txt') as f0:#open('tx654.txt') as f0:
+        with open('u\\tx.txt') as f0:#open('tx654.txt') as f0:#open('u\\te.txt') as f0:#open('tx654.txt') as f0:
             txt = f0.readlines()
         
         # open title file
-        with open('ttt165.txt') as f1:#open('u\\titles.txt') as f1: #open('ttt165.txt') as f1:
+        with open('u\\ti.txt') as f1:#open('ttt165.txt') as f1:#open('u\\ti.txt') as f1: #open('ttt165.txt') as f1:
             titles = f1.readlines()
 
         # open keywords file
-        with open('kk654.txt') as f2:#open('u\\keywords.txt') as f2: #open('kk654.txt') as f2:
+        with open('u\\k.txt') as f2:# open('kk654.txt') as f2:#open('u\\k.txt') as f2: #open('kk654.txt') as f2:
             keywords = f2.readlines()
 
         # open images file
-        with open('im95.txt') as f3:#open('u\\images.txt') as f3: #open('im95.txt') as f3:
+        with open('u\\i.txt') as f3:# open('im95.txt') as f3:#open('u\\i.txt') as f3: #open('im95.txt') as f3:
             images = f3.readlines()
 
 
@@ -162,7 +162,8 @@ def interact_model(
             
             imgs = random.sample(images, min(len(inps)-1,len(images)))
             tits = random.sample(titles, min(len(inps)-1,len(titles)))
-            kkw = [translate(k) for k in random.sample(keyword, min(len(inps)-1,len(keywords)))]
+            tmp2 = random.sample(keywords, min(len(inps)-1,len(keywords)))
+            kkw = [translate(k.replace("\n",'')) for k in tmp2]
 
             temp = [translate(t.replace("\n","")).split(" ") for t in tits]
             [highlight.extend(tt) for tt in temp]
@@ -177,9 +178,7 @@ def interact_model(
                     context_tokens = enc.encode(inp)                        
                     out = sess.run(output, feed_dict={context: [context_tokens for _ in range(batch_size)]})[:, len(context_tokens):]
                     if not "<|endoftext|>" in enc.decode(out[0]):
-                        break
-                   
-
+                        break                
                 amb = inp + enc.decode(out[0])
                 amb = amb[0:amb.rindex(".")] + "."
                 
